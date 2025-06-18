@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+<!--   <title>TSP Art Generator</title> -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main>
+<!--     <h1>TSP Art Generator</h1> -->
+    <div id="canvas-container"></div>
+    <div id="controls"></div>
+  </main>
+
+  <!-- 🔽 p5.js 基礎函式庫 -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+  <script src="https://d3js.org/d3-delaunay.v6.min.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <!-- 🔽 自訂模組 -->
+  <script src="js/tsp_core.js"></script>
+  <script src="js/drawing_utils.js"></script>
+  <script src="js/voronoi_relaxation.js"></script>
+  <script src="js/points_to_json.js"></script>
+  <script src="js/point_generator.js"></script>
+  <script src="js/logger.js"></script>
+  <script src="sketch.js"></script>
+</body>
+</html>
