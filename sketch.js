@@ -1,7 +1,7 @@
 // All of the points
 let points = [];
 let unrelaxedPoints = [];
-let pointCnt = 1000;
+let pointCnt = 100;
 let drawIndex = 0;
 
 // Global variables for geometry
@@ -10,7 +10,7 @@ let delaunay, voronoi;
 // Image
 let gloria;
 
-let relaxFrames = 400;
+let relaxFrames = 300;
 let showAnimation = false;
 let tspCalculationStarted = false;
 let tspCalculationDone = false;
