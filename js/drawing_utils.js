@@ -19,6 +19,7 @@ function drawPolyline(path, c, w) {
   endShape();
 }
 
+
 function drawTSPAnimated(path) {
   stroke(0, 0, 0, 300);
   strokeWeight(0.9);
@@ -31,9 +32,9 @@ function drawTSPAnimated(path) {
   endShape();
 
   if (drawIndex < path.length) {
-    drawIndex += 0.5; // 控制動畫速度
+    drawIndex += 0.5; // Animation speed
   } else {
-    // 完成後繪製完整路徑以避免消失
+    // Keep the last frame
     beginShape();
     for (let p of path) {
       vertex(p.x, p.y);
