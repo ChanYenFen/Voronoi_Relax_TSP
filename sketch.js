@@ -1,109 +1,84 @@
 // All of the points
 let points = [];
-let pointCnt = 1000;
-
+let unrelaxedPoints = [];
+let pointCnt = 2000;
 let drawIndex = 0;
+
 // Global variables for geometry
 let delaunay, voronoi;
 
 // Image
 let gloria;
 
-let relaxFrames = 200; // Let Voronoi relaxation run for 100 frames
-let showInitialPath = false;
-let showOptimizedPath = false;
-let optimizedPath = [];
-let optimizedCalculated = false;
+let relaxFrames = 400;
+let showAnimation = false;
+let tspCalculationStarted = false;
+let tspCalculationDone = false;
 
-// Log
-let rawPath = [];
-let nnSorted = [];
+let rawPath = [], nnSorted = [], optimizedPath = [];
 
-let readyToOptimize = false;
-let triggerOptimize = false;
-
-
-// Load image before setup
 function preload() {
   gloria = loadImage("data/sample.jpg");
 }
 
 function setup() {
-  createCanvas(500, 500);
+  const canvas = createCanvas(500, 500);
+  canvas.parent('canvas-wrapper');
 
-  // Generate random points avoiding bright areas
   generateRandomPoints(pointCnt);
+  unrelaxedPoints = points.map(p => p.copy());
 
-  // Calculate Delaunay triangulation and Voronoi diagram
   delaunay = calculateDelaunay(points);
   voronoi = delaunay.voronoi([0, 0, width, height]);
-  
-  // Save points as s json file
-  let saveBtn = createButton('💾 Save Points');
-  saveBtn.position(10, height+10);
-  saveBtn.mousePressed(() => {savePointsToJSON(points, 'my.json');
-                             });
-  
-  let toggleInitialPath = createButton('🧵 Toggle Initial Path');
-  toggleInitialPath.position(140, height + 10);
-  toggleInitialPath.mousePressed(() => {
-    showInitialPath = !showInitialPath;
-  });
-  
-  let optimizeBtn = createButton('🧠 Optimize Path');
-  optimizeBtn.position(300, height + 10);
-  optimizeBtn.mousePressed(() => {
-    triggerOptimize = true;
-    if (optimizedCalculated) {
-      showOptimizedPath = !showOptimizedPath;
-    }
+
+  createButton('Save Points').parent("button-panel").mousePressed(() => {
+    savePointsToJSON(points, 'my.json');
   });
 
-  let logBtn = createButton('📏 Log Length');
-  logBtn.position(450, height + 10);
-  logBtn.mousePressed(() => {
-    let rawLen = pathLength(rawPath);
-    let nnLen = pathLength(nnSorted);
-    let optLen = pathLength(optimizedPath);
-    console.log("🔵 Raw:", rawLen.toFixed(2));
-    console.log("🟡 Nearest Neighbor:", nnLen.toFixed(2));
-    console.log("🔴 Optimized:", optLen.toFixed(2));
+  createButton('Log Length').parent("button-panel").mousePressed(() => {
+    console.log("🔵 Raw:", pathLength(rawPath).toFixed(2));
+    console.log("🟡 NN:", pathLength(nnSorted).toFixed(2));
+    console.log("🔴 Opt:", pathLength(optimizedPath).toFixed(2));
   });
-  
 }
 
 function draw() {
   background(255);
 
-  // Display points
-  displayPoints();
+  if (!tspCalculationStarted && relaxFrames === 0) {
+    tspCalculationStarted = true;
+    setTimeout(() => {
+      rawPath = [...points];
+      nnSorted = nearestNeighborPath([...points]);
+      optimizedPath = twoOptWithRadiusAvoidCrossing([...nnSorted], 100, 100);
+      optimizedPath = cleanCrossingsIterative(optimizedPath);
 
-  // Calculate centroids and update points
+      // Remap optimizedPath to match reset point positions
+      const newPoints = unrelaxedPoints.map(p => p.copy());
+      optimizedPath = optimizedPath.map(p => {
+        const idx = rawPath.findIndex(rp => rp.x === p.x && rp.y === p.y);
+        return newPoints[idx];
+      });
+      points = newPoints;
+
+      delaunay = calculateDelaunay(points);
+      voronoi = delaunay.voronoi([0, 0, width, height]);
+
+      tspCalculationDone = true;
+      showAnimation = true;
+      relaxFrames = 400;
+      drawIndex = 0;
+    }, 0);
+  }
+
   if (relaxFrames > 0) {
     updatePoints();
     relaxFrames--;
-    // Calculate TSP only when relax is done
-    if (relaxFrames === 0) {
-      readyToOptimize = true;
-    }
   }
-  
-  if (triggerOptimize && readyToOptimize && !optimizedCalculated) {
-    rawPath = [...points];
-    nnSorted = nearestNeighborPath([...points]);
-    optimizedPath = twoOptWithRadiusAvoidCrossing([...nnSorted], 100, 200);
-    optimizedPath = cleanCrossingsIterative(optimizedPath);
-    optimizedCalculated = true;
-  }
-  
-  // if (showInitialPath) {
-  //   drawPolyline(points, color(0, 0, 0, 100), 0.1);
-  // }
-  drawPolyline(points, color(0, 0, 0, 100), 0.2);
 
-  if (showOptimizedPath && optimizedPath.length > 0) {
-    // drawPolyline(optimizedPath, color(25, 0, 0, 150), 1);
-    drawTSPAnimated(optimizedPath);
+  if (showAnimation) {
+    displayPoints();
+    drawPolyline(points, color(0, 0, 0, 100), 0.2);
+    if (optimizedPath.length > 0) drawTSPAnimated(optimizedPath);
   }
-  
 }
