@@ -36,9 +36,7 @@ function setup() {
   });
 
   createButton('Log Length').parent("button-panel").mousePressed(() => {
-    console.log("🔵 Raw:", pathLength(rawPath).toFixed(2));
-    console.log("🟡 NN:", pathLength(nnSorted).toFixed(2));
-    console.log("🔴 Opt:", pathLength(optimizedPath).toFixed(2));
+    logPathLengths(pointCnt, rawPath, nnSorted, optimizedPath);
   });
 }
 
