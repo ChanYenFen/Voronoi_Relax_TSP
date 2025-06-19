@@ -2,22 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-<!--   <title>TSP Art Generator</title> -->
+  <title>VoronoiRelaxTSP</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #f6f6f6;
+      font-family: sans-serif;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
 </head>
 <body>
-  <main>
-<!--     <h1>TSP Art Generator</h1> -->
-    <div id="canvas-container"></div>
-    <div id="controls"></div>
-  </main>
-
-  <!-- 🔽 p5.js 基礎函式庫 -->
+  <!-- p5.js -->
   <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
   <script src="https://d3js.org/d3-delaunay.v6.min.js"></script>
   <script src="https://d3js.org/d3.v7.min.js"></script>
 
-  <!-- 🔽 自訂模組 -->
+  <!-- custom modules -->
   <script src="js/tsp_core.js"></script>
   <script src="js/drawing_utils.js"></script>
   <script src="js/voronoi_relaxation.js"></script>
