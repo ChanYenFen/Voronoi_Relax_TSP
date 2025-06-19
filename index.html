@@ -17,9 +17,36 @@
     canvas {
       display: block;
     }
+    button {
+    font-size: 10px;
+    font-family: 'Helvetica', sans-serif;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: #f8f8f8;
+    cursor: pointer;
+    }
+
+    button:hover {
+      background: #e0e0e0;
+    }
   </style>
 </head>
 <body>
+  <div id="canvas-wrapper" style="position: relative; 
+                                  width: fit-content; 
+                                  margin: auto; 
+                                  padding-top: 40px;">
+    <div id="button-panel" style="position: absolute;
+                                  top: 100%;
+                                  left: 0;
+                                  transform: translateY(10px);
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: 6px;
+                                  "></div>
+  </div>
+  
   <!-- p5.js -->
   <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
   <script src="https://d3js.org/d3-delaunay.v6.min.js"></script>
