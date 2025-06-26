@@ -1,2 +1,2 @@
 // token.js
-const GITHUB_TOKEN = 'your-actual-token-here';
+const GITHUB_TOKEN = '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';
