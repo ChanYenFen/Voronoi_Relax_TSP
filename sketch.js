@@ -38,6 +38,14 @@ function setup() {
   createButton('Log Length').parent("button-panel").mousePressed(() => {
     logPathLengths(pointCnt, rawPath, nnSorted, optimizedPath);
   });
+
+  createButton('Upload Points to GitHub')
+  .parent("button-panel")
+  .mousePressed(() => {
+    const json = JSON.stringify(points);
+    uploadJSONToGitHub(json, 'points.json');
+  });
+  
 }
 
 function draw() {
@@ -79,4 +87,43 @@ function draw() {
     drawPolyline(points, color(0, 0, 0, 100), 0.2);
     if (optimizedPath.length > 0) drawTSPAnimated(optimizedPath);
   }
+}
+
+async function uploadJSONToGitHub(jsonData, filename) {
+  const repo = 'ChanYenFen/Voronoi_Relax_TSP';
+  const path = `data/${filename}`;
+  const token = 'mytoken';
+  const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
+
+  let sha = null;
+  try {
+    const res = await fetch(apiUrl, {
+      headers: {
+        Authorization: `token ${token}`,
+      },
+    });
+    if (res.ok) {
+      const fileData = await res.json();
+      sha = fileData.sha;
+    }
+  } catch (e) {
+    console.log("檔案不存在，將建立新檔案");
+  }
+
+  const response = await fetch(apiUrl, {
+    method: 'PUT',
+    headers: {
+      Authorization: `token ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      message: 'Update JSON from p5.js',
+      content: btoa(unescape(encodeURIComponent(jsonData))),
+      sha: sha,
+    }),
+  });
+
+  const result = await response.json();
+  console.log(result);
+  alert("Json uploaded！");
 }
