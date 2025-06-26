@@ -1,7 +1,7 @@
 // All of the points
 let points = [];
 let unrelaxedPoints = [];
-let pointCnt = 1000;
+let pointCnt = 100;
 let drawIndex = 0;
 
 // Global variables for geometry
