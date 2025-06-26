@@ -92,7 +92,7 @@ function draw() {
 async function uploadJSONToGitHub(jsonData, filename) {
   const repo = 'ChanYenFen/Voronoi_Relax_TSP';
   const path = `data/${filename}`;
-  const token = 'mytoken';
+  const token = GITHUB_TOKEN;
   const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
 
   let sha = null;
